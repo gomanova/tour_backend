@@ -5,3 +5,17 @@ db.sqlite3
 .env
 .idea/
 .DS_Store
+
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+db.sqlite3
+tour_db
+local_settings.py
+media/
+staticfiles/
+.DS_Store
+.vscode/
+.idea/
