@@ -3,9 +3,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Booking, User
+from .models import Booking, User, Tour
 from .services import booking_service
 
+from .serializers import TourSerializer
 
 def get_booking_user(request):
     request_user = getattr(request, 'user', None)
@@ -76,3 +77,41 @@ class BookingConfirmView(APIView):
                 'status': booking.status,
             }
         )
+class TourListView(APIView):
+    def get(self, request):
+        tours = Tour.objects.all()
+
+        location = request.query_params.get('location')
+        difficulty = request.query_params.get('difficulty')
+        price_min = request.query_params.get('price_min')
+        price_max = request.query_params.get('price_max')
+
+        if location:
+            tours = tours.filter(location=location)
+        if difficulty:
+            tours = tours.filter(difficulty=difficulty)
+        if price_min:
+            tours = tours.filter(price__gte=float(price_min))
+        if price_max:
+            tours = tours.filter(price__lte=float(price_max))
+
+        page = int(request.query_params.get('page', 1))
+        limit = int(request.query_params.get('limit', 10))
+        skip = (page - 1) * limit
+        tours = tours[skip: skip + limit]
+
+        serializer = TourSerializer(tours, many=True)
+        return Response(serializer.data)
+
+
+class TourDetailView(APIView):
+    def get(self, request, tour_id):
+        try:
+            tour = Tour.objects.get(id=tour_id)
+        except Tour.DoesNotExist:
+            return Response(
+                {'detail': 'Тур не найден'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        serializer = TourSerializer(tour)
+        return Response(serializer.data)
