@@ -3,6 +3,8 @@ from .models import Tour
 
 
 class TourSerializer(serializers.ModelSerializer):
+    price = serializers.FloatField()
+    
     class Meta:
         model = Tour
         fields = [
