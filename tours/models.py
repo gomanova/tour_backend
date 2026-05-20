@@ -17,7 +17,7 @@ class Tour(models.Model):
     duration = models.IntegerField(help_text="Duration in days")
     difficulty = models.CharField(max_length=50)
     max_people = models.IntegerField()
-    image = models.URLField()
+    image = models.ImageField(upload_to='tours/')
 
     def __str__(self):
         return self.title
