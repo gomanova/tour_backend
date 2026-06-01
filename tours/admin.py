@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import User, Tour, Booking, Payment, Review
+from .models import User, Tour, Booking, Payment, Review, TourDate
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "email")
@@ -8,9 +9,16 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Tour)
 class TourAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "price", "location", "difficulty")
+    list_display = ("id", "title", "price", "location", "difficulty", "accommodation")
     search_fields = ("title", "location")
     list_filter = ("difficulty",)
+
+
+@admin.register(TourDate)
+class TourDateAdmin(admin.ModelAdmin):
+    list_display = ("id", "tour", "start_date", "end_date", "available_spots")
+    list_filter = ("tour",)
+    list_select_related = ("tour",)
 
 
 @admin.register(Booking)
